@@ -1,0 +1,94 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Fungsi untuk mengatur game board
+void displayBoard(char board[3][3]) {
+    cout << endl;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            cout << " " << board[i][j] << " ";
+            if (j < 2) {
+                cout << "|";
+            }
+        }
+        cout << endl;
+        if (i < 2) {
+            cout << "---------";
+            cout << endl;
+        }
+    }
+}
+
+// Fungsi untuk mengecek apakah pemain atau komputer telah menang
+bool checkForWin(char board[][3], char piece) {
+    for (int i = 0; i < 3; i++) {
+        if (board[i][0] == piece && board[i][1] == piece && board[i][2] == piece) {
+            return true;
+        }
+        if (board[0][i] == piece && board[1][i] == piece && board[2][i] == piece) {
+            return true;
+        }
+    }
+    if (board[0][0] == piece && board[1][1] == piece && board[2][2] == piece) {
+        return true;
+    }
+    if (board[0][2] == piece && board[1][1] == piece && board[2][0] == piece) {
+        return true;
+    }
+    return false;
+}
+
+// Fungsi untuk mengecek apakah ada slot yang tersedia di game board
+bool checkForTie(char board[][3]) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] == ' ') {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+int main() {
+    char board[3][3] = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
+    char piece = 'X';
+    int move;
+    bool isWinner = false;
+    bool isTie = false;
+
+    while (!isWinner && !isTie) {
+        displayBoard(board);
+        std::cout << "Pemain " << piece << ", pilih nomor tempat yang ingin anda isi (1-9): ";
+        std::cin >> move;
+        move--;
+
+        // Mengecek apakah pemain telah memilih slot yang tersedia
+        if (board[move / 3][move % 3] == ' ') {
+            board[move / 3][move % 3] = piece;
+            piece = (piece == 'X') ? 'O' : 'X'; // Mengganti simbol pemain
+        } else {
+            std::cout << "Slot yang dipilih telah terisi, silakan pilih yang lain." << std::endl;
+            continue;
+        }
+
+        // Mengecek apakah pemain atau komputer telah menang
+        isWinner = checkForWin(board, piece);
+        if (isWinner) {
+            displayBoard(board);
+            std::cout << "Selamat! Pemain " << piece << " telah menang!" << std::endl;
+            break;
+        }
+
+        // Mengecek apakah ada slot yang tersedia
+        isTie = checkForTie(board);
+        if (isTie) {
+            displayBoard(board);
+            std::cout << "Game seri." << std::endl;
+            break;
+        }
+    }
+
+    return 0;
+}
